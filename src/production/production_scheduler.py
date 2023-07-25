@@ -8,19 +8,19 @@ def calculate_points(match_type, win_loss, score):
         if win_loss == 'Win':
             return 2
         elif win_loss == 'Loss':
-            if '0-1' in sets or '1-0' in sets:  # Split sets loss
+            if len(sets) > 2:  # Indicates that there were split sets (e.g., "6-2, 3-6, 1-0")
                 return 1
-            else:  # Straight sets loss
-                return 0
+            else:  # Straight sets loss (e.g., "6-2, 6-3")
+                return -1
 
     elif match_type == 'Challenge Match':
         if win_loss == 'Win':
             return 3
         elif win_loss == 'Loss':
-            if '0-1' in sets or '1-0' in sets:  # Split sets loss
+            if len(sets) > 2 or '0-1' in sets or '1-0' in sets:  # Split sets loss
                 return 1
-            else:  # Challenger or Challenged loses in straight sets
-                return -1 if '0-1' in sets or '1-0' in sets else 0
+            else:  # Challenger loses in straight sets
+                return -1 
 
     return 'Invalid input'
 

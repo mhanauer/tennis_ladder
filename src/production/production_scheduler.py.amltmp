@@ -8,22 +8,24 @@ def calculate_points(match_type, win_loss, score):
         if win_loss == 'Win':
             return 2
         elif win_loss == 'Loss':
-            if len(sets) > 1:  # Indicates that there were split sets
+            # A split set loss will have more than one set
+            if any('-1' in s for s in sets):  # Loss but won at least one set (split sets loss)
                 return 1
             else:
                 return 0  # Straight sets loss
+
     elif match_type == 'Challenge Match':
         if win_loss == 'Win':
             return 3
         elif win_loss == 'Loss':
-            if len(sets) > 1:  # Indicates that there were split sets
+            if any('-1' in s for s in sets):  # Loss but won at least one set (split sets loss)
                 return 1
-            elif '0-1' in sets:  # Indicates challenger lost in straight sets
+            elif '0-1' in sets:  # Challenger lost in straight sets
                 return -1
             else:
                 return 0  # Challenged lost in straight sets
+                
     return 'Invalid input'
-
 
 def main():
     st.title('Match Points Calculator')

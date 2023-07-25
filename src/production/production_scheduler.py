@@ -20,7 +20,7 @@ def calculate_points(match_type, win_loss, score):
             if len(sets) > 2 or '0-1' in sets or '1-0' in sets:  # Split sets loss
                 return 1
             else:  # Challenger loses in straight sets
-                return -1 
+                return 0
 
     return 'Invalid input'
 

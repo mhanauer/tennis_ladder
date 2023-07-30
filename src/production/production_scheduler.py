@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 def calculate_points(match_type, win_loss, score, challenger=None):
     sets = score.split(',')
@@ -26,8 +27,11 @@ def calculate_points(match_type, win_loss, score, challenger=None):
 def main():
     st.title('Match Points Calculator')
 
-    if 'data' not in st.session_state:
-        st.session_state['data'] = []
+    # Load data from the previous session
+    try:
+        data = pd.read_csv('data.csv').to_dict('records')
+    except FileNotFoundError:
+        data = []
 
     match_type = st.selectbox('Select the match type:', ['Proposal Match', 'Challenge Match'])
     challenger = None
@@ -38,15 +42,17 @@ def main():
 
     if st.button('Calculate Points'):
         points = calculate_points(match_type, win_loss, score, challenger)
-        st.session_state['data'].append({
+        data.append({
             'Match Type': match_type,
             'Challenger/Challenged': challenger,
             'Win/Loss': win_loss,
             'Score': score,
             'Points': points
         })
+        # Save data for the next session
+        pd.DataFrame(data).to_csv('data.csv', index=False)
 
-    st.table(st.session_state['data'])
+    st.table(data)
 
 if __name__ == "__main__":
     main()

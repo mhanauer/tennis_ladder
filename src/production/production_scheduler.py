@@ -30,7 +30,7 @@ def main():
     # Load data from the previous session
     try:
         data = pd.read_csv('data.csv').to_dict('records')
-    except FileNotFoundError:
+    except (FileNotFoundError, pd.errors.EmptyDataError):
         data = []
 
     name = st.selectbox('Select your name:', ['Matt Hanauer', 'Max Gregson'])

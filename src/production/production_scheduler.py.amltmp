@@ -49,8 +49,14 @@ def main():
             'Score': score,
             'Points': points
         })
-        # Save data for the next session
-        pd.DataFrame(data).to_csv('data.csv', index=False)
+
+    if data:
+        selected_row = st.selectbox('Select a row to delete:', range(len(data)), format_func=lambda x: f'Row {x+1}')
+        if st.button('Delete selected row'):
+            del data[selected_row]
+
+    # Save data for the next session
+    pd.DataFrame(data).to_csv('data.csv', index=False)
 
     st.table(data)
 

@@ -1,31 +1,34 @@
 import streamlit as st
 
 def calculate_points(match_type, win_loss, score, challenger=None):
-    # Split the score into individual sets
     sets = score.split(',')
 
     if match_type == 'Proposal Match':
         if win_loss == 'Win':
             return 2
         elif win_loss == 'Loss':
-            if len(sets) > 2:  # Indicates that there were split sets (e.g., "6-2, 3-6, 1-0")
+            if len(sets) > 2:  
                 return 1
-            else:  # Straight sets loss (e.g., "6-2, 6-3")
+            else: 
                 return 0
 
     elif match_type == 'Challenge Match':
         if win_loss == 'Win':
             return 3
         elif win_loss == 'Loss':
-            if len(sets) > 2 or '0-1' in sets or '1-0' in sets:  # Split sets loss
+            if len(sets) > 2 or '0-1' in sets or '1-0' in sets: 
                 return 1
-            else:  # Challenger loses in straight sets
+            else:
                 return -1 if challenger == 'Challenger' else 0
 
     return 'Invalid input'
 
 def main():
     st.title('Match Points Calculator')
+
+    if 'data' not in st.session_state:
+        st.session_state['data'] = []
+
     match_type = st.selectbox('Select the match type:', ['Proposal Match', 'Challenge Match'])
     challenger = None
     if match_type == 'Challenge Match':
@@ -35,8 +38,15 @@ def main():
 
     if st.button('Calculate Points'):
         points = calculate_points(match_type, win_loss, score, challenger)
-        st.write(f'Points for this match: {points}')
+        st.session_state['data'].append({
+            'Match Type': match_type,
+            'Challenger/Challenged': challenger,
+            'Win/Loss': win_loss,
+            'Score': score,
+            'Points': points
+        })
 
+    st.table(st.session_state['data'])
 
 if __name__ == "__main__":
     main()

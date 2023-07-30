@@ -29,9 +29,9 @@ def main():
 
     # Load data from the previous session
     try:
-        data = pd.read_csv('data.csv').to_dict('records')
+        data = pd.read_csv('data.csv')
     except (FileNotFoundError, pd.errors.EmptyDataError):
-        data = []
+        data = pd.DataFrame()
 
     name = st.selectbox('Select your name:', ['Matt Hanauer', 'Max Gregson'])
     match_type = st.selectbox('Select the match type:', ['Proposal Match', 'Challenge Match'])
@@ -43,24 +43,28 @@ def main():
 
     if st.button('Calculate Points'):
         points = calculate_points(match_type, win_loss, score, challenger)
-        data.append({
+        data = data.append({
             'Name': name,
             'Match Type': match_type,
             'Challenger/Challenged': challenger,
             'Win/Loss': win_loss,
             'Score': score,
             'Points': points
-        })
+        }, ignore_index=True)
 
-    if data:
+    if not data.empty:
         selected_row = st.selectbox('Select a row to delete:', range(len(data)), format_func=lambda x: f'Row {x+1}')
         if st.button('Delete selected row'):
-            del data[selected_row]
+            data = data.drop(selected_row)
 
     # Save data for the next session
-    pd.DataFrame(data).to_csv('data.csv', index=False)
+    data.to_csv('data.csv', index=False)
 
     st.table(data)
+
+    # Calculate the total points for each person
+    total_points = data.groupby('Name')['Points'].sum()
+    st.table(total_points)
 
 if __name__ == "__main__":
     main()

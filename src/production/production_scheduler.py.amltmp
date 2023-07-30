@@ -33,6 +33,7 @@ def main():
     except FileNotFoundError:
         data = []
 
+    name = st.selectbox('Select your name:', ['Matt Hanauer', 'Max Gregson'])
     match_type = st.selectbox('Select the match type:', ['Proposal Match', 'Challenge Match'])
     challenger = None
     if match_type == 'Challenge Match':
@@ -43,6 +44,7 @@ def main():
     if st.button('Calculate Points'):
         points = calculate_points(match_type, win_loss, score, challenger)
         data.append({
+            'Name': name,
             'Match Type': match_type,
             'Challenger/Challenged': challenger,
             'Win/Loss': win_loss,

@@ -78,17 +78,18 @@ def main():
             'Points': points_opponent
         }, ignore_index=True)
 
-    if not data.empty:
-        selected_row = st.selectbox('Select a row to delete:', range(len(data)), format_func=lambda x: f'Row {x+1}')
-        if st.button('Delete selected row'):
-            data = data.drop(selected_row)
+        if not data.empty:
+    # Changed format_func to start with "Row {x}" instead of "Row {x+1}"
+            selected_row = st.selectbox('Select a row to delete:', range(len(data)), format_func=lambda x: f'Row {x}')
+            if st.button('Delete selected row'):
+                data = data.drop(selected_row)
 
     # Save data for the next session
     data.to_csv('data.csv', index=False)
     st.table(data)
 
     # Calculate the total points for each person
-    total_points = data.groupby('Name')['Points'].sum()
+    total_points = data.groupby('Name')['Points'].sum().sort_values(ascending=False)
     st.table(total_points)
 
 if __name__ == "__main__":

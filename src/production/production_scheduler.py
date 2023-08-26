@@ -35,7 +35,9 @@ def main():
 
     names_list = ['Matt Hanauer', 'Max Gregson', 'Alejandro', 'Aman Luther', 'Baaqir Yusuf', 'Billy Clark', 'Blake Hutchinson', 'Brady Sowers', 'Brett Eckles', 'Byron Byars', 'Craig Radley', 'Curt Lawson', 'Ed Sch', 'Erik Swanson', 'Ezra Sue-Ho', 'Henry Kennelly', 'Jackson Cabell', 'Jake Ortiz', 'James Rees', 'JB', 'JD Mellott', 'Jon Canon', 'Louis Crow', 'Luc Sanchez', 'Matt Curry', 'Matt James', 'Naveen Natesh', 'Ryan Berliner', 'Spencer Johnson', 'Spencer Llewellyn', 'Tommy Hibbs', 'Tyler Carroll', 'Visakan', 'Wes Watson', 'Youngjun Lee']
     
-    name = st.selectbox('Select your name:', names_list)
+    name_me = st.selectbox('Select your name:', names_list)
+    name_opponent = st.selectbox('Select your opponent:', names_list)
+
     match_type = st.selectbox('Select the match type:', ['Proposal Match', 'Challenge Match'])
     
     challenger = None
@@ -48,7 +50,8 @@ def main():
     if st.button('Calculate Points'):
         points = calculate_points(match_type, win_loss, score, challenger)
         data = data.append({
-            'Name': name,
+            'Name Me': name_me,
+            'Name Opponent': name_opponent,
             'Match Type': match_type,
             'Challenger/Challenged': challenger,
             'Win/Loss': win_loss,
@@ -66,7 +69,7 @@ def main():
     st.table(data)
 
     # Calculate the total points for each person
-    total_points = data.groupby('Name')['Points'].sum()
+    total_points = data.groupby('Name Me')['Points'].sum()
     st.table(total_points)
 
 if __name__ == "__main__":

@@ -77,13 +77,15 @@ def main():
         st.table(data)
 
         # Option to delete a row
-        selected_row = st.selectbox('Select a row to delete:', range(len(data)), format_func=lambda x: f'Row {x}')
+        selected_row = st.selectbox('Select a row to delete (refresh brower tab to see changes):', range(len(data)), format_func=lambda x: f'Row {x}')
         if st.button('Delete selected row'):
             data = data.drop(selected_row).reset_index(drop=True)
 
     # Save data for the next session
     data.to_csv('data.csv', index=False)
-
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    backup_filename = f'data_backup_{timestamp}.csv'
+    data.to_csv(backup_filename, index=False)
     # Calculate and display the total points for each person, ordered by highest points
     total_points = data.groupby('Name')['Points'].sum().sort_values(ascending=False)
     st.table(total_points)

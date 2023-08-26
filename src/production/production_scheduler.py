@@ -6,7 +6,7 @@ def calculate_points(match_type, win_loss, score, challenger=None):
     
     if match_type == 'Proposal Match':
         if win_loss == 'Win':
-            return (2, 0)  # (points_for_player, points_for_opponent)
+            return (2, 0)
         elif win_loss == 'Loss':
             if len(sets) > 2:  
                 return (1, 2)
@@ -27,7 +27,6 @@ def calculate_points(match_type, win_loss, score, challenger=None):
 def main():
     st.title('Match Points Calculator')
 
-    # Load data from the previous session
     try:
         data = pd.read_csv('data.csv')
     except (FileNotFoundError, pd.errors.EmptyDataError):
@@ -50,12 +49,19 @@ def main():
     if st.button('Calculate Points'):
         points_me, points_opponent = calculate_points(match_type, win_loss, score, challenger)
         
+        if match_type == "Proposal Match":
+            challenger_me = None
+            challenger_opponent = None
+        else:
+            challenger_me = challenger
+            challenger_opponent = 'Challenged' if challenger == 'Challenger' else 'Challenger'
+        
         # Player's data
         data = data.append({
             'Name': name_me,
             'Opponent': name_opponent,
             'Match Type': match_type,
-            'Challenger/Challenged': challenger,
+            'Challenger/Challenged': challenger_me,
             'Win/Loss': win_loss,
             'Score': score,
             'Points': points_me
@@ -66,7 +72,7 @@ def main():
             'Name': name_opponent,
             'Opponent': name_me,
             'Match Type': match_type,
-            'Challenger/Challenged': 'Challenged' if challenger == 'Challenger' else 'Challenger',
+            'Challenger/Challenged': challenger_opponent,
             'Win/Loss': 'Loss' if win_loss == 'Win' else 'Win',
             'Score': score,
             'Points': points_opponent

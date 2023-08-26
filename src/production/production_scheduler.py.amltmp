@@ -7,9 +7,11 @@ def calculate_points(match_type, win_loss, score, challenger=None):
     
     if match_type == 'Proposal Match':
         if win_loss == 'Win':
+            if len(sets) > 2:  # If player wins after a third set
+                return (2, 1)  # (points_for_player, points_for_opponent)
             return (2, 0)  # (points_for_player, points_for_opponent)
         elif win_loss == 'Loss':
-            if len(sets) > 2:  
+            if len(sets) > 2:  # If player loses after a third set
                 return (1, 2)
             else: 
                 return (0, 2)
@@ -24,6 +26,7 @@ def calculate_points(match_type, win_loss, score, challenger=None):
                 return (-1 if challenger == 'Challenger' else 0, 3)
 
     return ('Invalid input', 'Invalid input')
+
 
 def main():
     st.title('Match Points Calculator')
@@ -68,7 +71,7 @@ def main():
             'Name': name_opponent,
             'Opponent': name_me,
             'Match Type': match_type,
-            'Challenger/Challenged': 'N/A' if match_type == 'Proposal Match' else ('Challenged' if challenger == 'Challenger' else 'Challenger'),
+            'Challenger/Challenged': np.nan if match_type == 'Proposal Match' else ('Challenged' if challenger == 'Challenger' else 'Challenger'),
             'Win/Loss': 'Loss' if win_loss == 'Win' else 'Win',
             'Score': score,
             'Points': points_opponent

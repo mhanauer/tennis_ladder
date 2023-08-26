@@ -3,7 +3,7 @@ import pandas as pd
 
 def calculate_points(match_type, win_loss, score, challenger=None):
     sets = score.split(',')
-
+    
     if match_type == 'Proposal Match':
         if win_loss == 'Win':
             return 2
@@ -34,12 +34,14 @@ def main():
         data = pd.DataFrame()
 
     names_list = ['Matt Hanauer', 'Max Gregson', 'Alejandro', 'Aman Luther', 'Baaqir Yusuf', 'Billy Clark', 'Blake Hutchinson', 'Brady Sowers', 'Brett Eckles', 'Byron Byars', 'Craig Radley', 'Curt Lawson', 'Ed Sch', 'Erik Swanson', 'Ezra Sue-Ho', 'Henry Kennelly', 'Jackson Cabell', 'Jake Ortiz', 'James Rees', 'JB', 'JD Mellott', 'Jon Canon', 'Louis Crow', 'Luc Sanchez', 'Matt Curry', 'Matt James', 'Naveen Natesh', 'Ryan Berliner', 'Spencer Johnson', 'Spencer Llewellyn', 'Tommy Hibbs', 'Tyler Carroll', 'Visakan', 'Wes Watson', 'Youngjun Lee']
-
-name = st.selectbox('Select your name:', names_list)
+    
+    name = st.selectbox('Select your name:', names_list)
     match_type = st.selectbox('Select the match type:', ['Proposal Match', 'Challenge Match'])
+    
     challenger = None
     if match_type == 'Challenge Match':
         challenger = st.selectbox('Are you the Challenger or the Challenged?', ['Challenger', 'Challenged'])
+
     win_loss = st.selectbox('Select Win or Loss:', ['Win', 'Loss'])
     score = st.text_input('Enter the score (e.g., "6-2, 6-3" for straight sets or "6-2, 3-6, 1-0" for split sets):')
 
@@ -61,7 +63,6 @@ name = st.selectbox('Select your name:', names_list)
 
     # Save data for the next session
     data.to_csv('data.csv', index=False)
-
     st.table(data)
 
     # Calculate the total points for each person

@@ -62,7 +62,7 @@ def main():
         }, ignore_index=True)
 
         # Opponent's data
-        data = data.append({
+        data = data.append({ 
             'Name': name_opponent,
             'Opponent': name_me,
             'Match Type': match_type,
@@ -83,9 +83,7 @@ def main():
 
     # Save data for the next session
     data.to_csv('data.csv', index=False)
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    backup_filename = f'data_backup_{timestamp}.csv'
-    data.to_csv(backup_filename, index=False)
+
     # Calculate and display the total points for each person, ordered by highest points
     total_points = data.groupby('Name')['Points'].sum().sort_values(ascending=False)
     st.table(total_points)

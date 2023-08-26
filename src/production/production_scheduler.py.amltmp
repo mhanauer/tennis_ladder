@@ -6,7 +6,7 @@ def calculate_points(match_type, win_loss, score, challenger=None):
     
     if match_type == 'Proposal Match':
         if win_loss == 'Win':
-            return (2, 0)
+            return (2, 0)  # (points_for_player, points_for_opponent)
         elif win_loss == 'Loss':
             if len(sets) > 2:  
                 return (1, 2)
@@ -27,6 +27,7 @@ def calculate_points(match_type, win_loss, score, challenger=None):
 def main():
     st.title('Match Points Calculator')
 
+    # Load data from the previous session
     try:
         data = pd.read_csv('data.csv')
     except (FileNotFoundError, pd.errors.EmptyDataError):
@@ -49,19 +50,12 @@ def main():
     if st.button('Calculate Points'):
         points_me, points_opponent = calculate_points(match_type, win_loss, score, challenger)
         
-        if match_type == "Proposal Match":
-            challenger_me = None
-            challenger_opponent = None
-        else:
-            challenger_me = challenger
-            challenger_opponent = 'Challenged' if challenger == 'Challenger' else 'Challenger'
-        
         # Player's data
         data = data.append({
             'Name': name_me,
             'Opponent': name_opponent,
             'Match Type': match_type,
-            'Challenger/Challenged': challenger_me,
+            'Challenger/Challenged': challenger,
             'Win/Loss': win_loss,
             'Score': score,
             'Points': points_me
@@ -72,23 +66,25 @@ def main():
             'Name': name_opponent,
             'Opponent': name_me,
             'Match Type': match_type,
-            'Challenger/Challenged': challenger_opponent,
+            'Challenger/Challenged': 'Challenged' if challenger == 'Challenger' else 'Challenger',
             'Win/Loss': 'Loss' if win_loss == 'Win' else 'Win',
             'Score': score,
             'Points': points_opponent
         }, ignore_index=True)
 
-        if not data.empty:
-    # Changed format_func to start with "Row {x}" instead of "Row {x+1}"
-            selected_row = st.selectbox('Select a row to delete:', range(len(data)), format_func=lambda x: f'Row {x}')
-            if st.button('Delete selected row'):
-                data = data.drop(selected_row)
+    if not data.empty:
+        # Display the data table
+        st.table(data)
+
+        # Option to delete a row
+        selected_row = st.selectbox('Select a row to delete:', range(len(data)), format_func=lambda x: f'Row {x}')
+        if st.button('Delete selected row'):
+            data = data.drop(selected_row).reset_index(drop=True)
 
     # Save data for the next session
     data.to_csv('data.csv', index=False)
-    st.table(data)
 
-    # Calculate the total points for each person
+    # Calculate and display the total points for each person, ordered by highest points
     total_points = data.groupby('Name')['Points'].sum().sort_values(ascending=False)
     st.table(total_points)
 

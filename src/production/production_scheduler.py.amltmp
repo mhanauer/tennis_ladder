@@ -62,15 +62,17 @@ def main():
         }, ignore_index=True)
 
         # Opponent's data
+        # Opponent's data
         data = data.append({ 
             'Name': name_opponent,
             'Opponent': name_me,
             'Match Type': match_type,
-            'Challenger/Challenged': 'Challenged' if challenger == 'Challenger' else 'Challenger',
+            'Challenger/Challenged': 'N/A' if match_type == 'Proposal Match' else ('Challenged' if challenger == 'Challenger' else 'Challenger'),
             'Win/Loss': 'Loss' if win_loss == 'Win' else 'Win',
             'Score': score,
             'Points': points_opponent
         }, ignore_index=True)
+
 
     if not data.empty:
         # Display the data table

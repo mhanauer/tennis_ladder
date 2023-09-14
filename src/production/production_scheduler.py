@@ -21,7 +21,7 @@ def calculate_points(match_type, win_loss, score, challenger=None):
             if len(sets) > 2 or '0-1' in sets or '1-0' in sets:  # split sets
                 return (3, 1)  # the opponent gets 1 point in case of split sets
             else:
-                return (3, -1 if challenger == 'Challenger' else 0)
+                return (3, 0 if challenger == 'Challenger' else 0)
         elif win_loss == 'Loss':
             if len(sets) > 2 or '0-1' in sets or '1-0' in sets: 
                 return (1, 3)

@@ -15,20 +15,24 @@ def calculate_points(match_type, win_loss, score, challenger=None):
                 return (1, 2)
             else: 
                 return (0, 2)
-
+        
     elif match_type == 'Challenge Match':
         if win_loss == 'Win':
-            if len(sets) > 2 or '0-1' in sets or '1-0' in sets:  # split sets
-                return (3, 1)  # the opponent gets 1 point in case of split sets
+            if len(sets) > 2 or '0-1' in sets or '1-0' in sets:
+                return (3, 1)
             else:
-                return (3, -1 if challenger == 'Challenger' else 0)
+                return (3, 0)  # The Challenged gets 0 points if they lose in straight sets
+                
         elif win_loss == 'Loss':
             if len(sets) > 2 or '0-1' in sets or '1-0' in sets: 
                 return (1, 3)
             else:
+                # The Challenger gets -1 if they lose in straight sets,
+                # The Challenged gets 0
                 return (-1 if challenger == 'Challenger' else 0, 3)
-
+                
     return ('Invalid input', 'Invalid input')
+
 
 
 

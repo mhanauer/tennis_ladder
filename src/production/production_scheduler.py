@@ -26,7 +26,7 @@ def calculate_points(match_type, win_loss, score, challenger=None):
             if len(sets) > 2 or '0-1' in sets or '1-0' in sets: 
                 return (1, 3)
             else:
-                return (-1 if challenger == 'Challenger' else 0, 3)
+                return (0 if challenger == 'Challenger' else -1, 3)
 
     return ('Invalid input', 'Invalid input')
 

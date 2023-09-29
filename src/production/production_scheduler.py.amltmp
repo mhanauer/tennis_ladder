@@ -45,8 +45,64 @@ def main():
     except (FileNotFoundError, pd.errors.EmptyDataError):
         data = pd.DataFrame()
 
-    names_list = ['Matt Hanauer', 'Max Gregson', 'Alejandro', 'Aman Luther', 'Baaqir Yusuf', 'Billy Clark', 'Blake Hutchinson', 'Brady Sowers', 'Brett Eckles', 'Byron Byars', 'Craig Radley', 'Curt Lawson', 'Ed Sch', 'Erik Swanson', 'Ezra Sue-Ho', 'Henry Kennelly', 'Jackson Cabell', 'Jake Ortiz', 'James Rees', 'JB', 'JD Mellott', 'Jon Canon', 'Louis Crow', 'Luc Sanchez', 'Matt Curry', 'Matt James', 'Naveen Natesh', 'Ryan Berliner', 'Spencer Johnson', 'Spencer Llewellyn', 'Tommy Hibbs', 'Tyler Carroll', 'Visakan', 'Wes Watson', 'Youngjun Lee']
-    
+    names_list = [
+        'Akihiro Hamada',
+        'Alejandro',
+        'Alex Paisecki',
+        'Aman Luther',
+        'Aubry Carmody',
+        'Baaqir Yusuf',
+        'Beomjun Ju',
+        'Billy Clark',
+        'Blake Hutchinson',
+        'Brady Sowers',
+        'Brandon Keisner',
+        'Brett Eckles',
+        'Byron Byars',
+        'Chris LaFlam',
+        'Chris Mack',
+        'Christian Basa',
+        'Craig Radley',
+        'Curt Lawson',
+        'Dave Belcher',
+        'Ed Sch',
+        'Erik Swanson',
+        'Ezra Sue-Ho',
+        'Henry Kennelly',
+        'Ian VonWald',
+        'JB',
+        'JD Mellott',
+        'Jackson Cabell',
+        'Jake Ortiz',
+        'James Rees',
+        'Joaquin Peralta',
+        'Jon Canon',
+        'Josh Collins',
+        'JP Rufilffson',
+        'Kwame Owen',
+        'Louis Crow',
+        'Luc Sanchez',
+        'Matt Curry',
+        'Matt Hanauer',
+        'Matt James',
+        'Max Gregson',
+        'Naveen Natesh',
+        'Nick Gilder',
+        'Nick Lau',
+        'Russell Li',
+        'Ryan Berliner',
+        'Ryan Lewis',
+        'Spencer Johnson',
+        'Spencer Llewellyn',
+        'Thomas Gaither',
+        'Tommy Hibbs',
+        'Tyler Carroll',
+        'Visakan',
+        'Wes Watson',
+        'Youngjun Lee'
+    ]
+
+
     name_me = st.selectbox('Select your name:', names_list)
     name_opponent = st.selectbox('Select your opponent:', names_list)
 

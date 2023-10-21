@@ -154,9 +154,12 @@ def main():
     # Save data for the next session
     data.to_csv('data.csv', index=False)
 
-    # Calculate and display the total points for each person, ordered by highest points
+if not data.empty and 'Name' in data.columns:
     total_points = data.groupby('Name')['Points'].sum().sort_values(ascending=False)
     st.table(total_points)
+else:
+    st.write("No data available or 'Name' column missing.")
+
 
 if __name__ == "__main__":
     main()

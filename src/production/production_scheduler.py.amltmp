@@ -4,33 +4,46 @@ import numpy as np
 
 def calculate_points(match_type, win_loss, score, challenger=None):
     sets = score.split(',')
-    # ... (your calculate_points function implementation)
+    
+    if match_type == 'Proposal Match':
+        if win_loss == 'Win':
+            if len(sets) > 2:
+                return (2, 1)
+            return (2, 0)
+        elif win_loss == 'Loss':
+            if len(sets) > 2:
+                return (1, 2)
+            else:
+                return (0, 2)
+    elif match_type == 'Challenge Match':
+        if win_loss == 'Win':
+            if len(sets) > 2 or '0-1' in sets or '1-0' in sets:
+                return (3, 1)
+            else:
+                return (3, 0)
+        elif win_loss == 'Loss':
+            if len(sets) > 2 or '0-1' in sets or '1-0' in sets:
+                return (1, 3)
+            else:
+                return (-1 if challenger == 'Challenger' else 0, 3)
     return ('Invalid input', 'Invalid input')
 
 def main():
     st.title('Match Points Calculator')
 
+    # Load existing data
     try:
         data = pd.read_csv('data.csv')
     except (FileNotFoundError, pd.errors.EmptyDataError):
         data = pd.DataFrame()
-
-    # Bulk upload option
+    
+    # Bulk Upload
     uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
     if uploaded_file is not None:
         bulk_data = pd.read_csv(uploaded_file)
-        st.write("Uploaded data:")
-        st.table(bulk_data)
-        if st.button('Append Uploaded Data'):
-            try:
-                data = pd.read_csv('data.csv')
-            except (FileNotFoundError, pd.errors.EmptyDataError):
-                data = pd.DataFrame()
-            data = pd.concat([data, bulk_data]).reset_index(drop=True)
-            data.to_csv('data.csv', index=False)
+        data = pd.concat([data, bulk_data]).reset_index(drop=True)
 
-    # Existing dropdowns and input boxes
-
+    
 
     names_list = [
         'Akihiro Hamada',
@@ -91,9 +104,10 @@ def main():
     ]
 
     
-    
+
     name_me = st.selectbox('Select your name:', names_list)
     name_opponent = st.selectbox('Select your opponent:', names_list)
+
     match_type = st.selectbox('Select the match type:', ['Proposal Match', 'Challenge Match'])
     
     challenger = None
@@ -101,41 +115,53 @@ def main():
         challenger = st.selectbox('Are you the Challenger or the Challenged?', ['Challenger', 'Challenged'])
 
     win_loss = st.selectbox('Select Win or Loss:', ['Win', 'Loss'])
-    score = st.text_input('Enter the score:')
+    score = st.text_input('Enter the score:', '')
 
     if st.button('Calculate Points'):
         points_me, points_opponent = calculate_points(match_type, win_loss, score, challenger)
-        
+
         data = data.append({
             'Name': name_me,
-            # ... (rest of the player's data)
+            'Opponent': name_opponent,
+            'Match Type': match_type,
+            'Challenger/Challenged': challenger,
+            'Win/Loss': win_loss,
+            'Score': score,
             'Points': points_me
         }, ignore_index=True)
 
         data = data.append({
             'Name': name_opponent,
-            # ... (rest of the opponent's data)
+            'Opponent': name_me,
+            'Match Type': match_type,
+            'Challenger/Challenged': 'Challenged' if challenger == 'Challenger' else 'Challenger',
+            'Win/Loss': 'Win' if win_loss == 'Loss' else 'Loss',
+            'Score': score,
             'Points': points_opponent
         }, ignore_index=True)
-        
-        data.to_csv('data.csv', index=False)
 
     if not data.empty:
         st.table(data)
         
-        # Option to delete a row
+        # Delete a row
         selected_row = st.selectbox('Select a row to delete:', range(len(data)), format_func=lambda x: f'Row {x}')
         if st.button('Delete selected row'):
             data = data.drop(selected_row).reset_index(drop=True)
-            data.to_csv('data.csv', index=False)
+    
+    # Save data
+    data.to_csv('data.csv', index=False)
 
-    # Displaying total points at the bottom
+    # Display total points
+    data['Points'] = pd.to_numeric(data['Points'], errors='coerce')
+    data.dropna(subset=['Points'], inplace=True)
+    
     if not data.empty and 'Name' in data.columns:
-        total_points = data.groupby('Name')['Points'].sum().sort_values(ascending=False)
-        st.write("Total Points:")
-        st.table(total_points)
-    else:
-        st.write("No data available or 'Name' column missing.")
+        try:
+            total_points = data.groupby('Name')['Points'].sum().sort_values(ascending=False)
+            st.write("Total Points:")
+            st.table(total_points)
+        except Exception as e:
+            st.write(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     main()

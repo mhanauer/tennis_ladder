@@ -7,7 +7,6 @@ def calculate_points(match_type, win_loss, score, challenger=None):
     # ... (rest of the function code remains the same)
     return ('Invalid input', 'Invalid input')
 
-
 def main():
     st.title('Match Points Calculator')
 
@@ -92,17 +91,18 @@ def main():
     ]
 
     
+    
     name_me = st.selectbox('Select your name:', names_list)
     name_opponent = st.selectbox('Select your opponent:', names_list)
     match_type = st.selectbox('Select the match type:', ['Proposal Match', 'Challenge Match'])
-
+    
     challenger = None
     if match_type == 'Challenge Match':
         challenger = st.selectbox('Are you the Challenger or the Challenged?', ['Challenger', 'Challenged'])
 
     win_loss = st.selectbox('Select Win or Loss:', ['Win', 'Loss'])
     score = st.text_input('Enter the score:')
-    
+
     if st.button('Calculate Points'):
         points_me, points_opponent = calculate_points(match_type, win_loss, score, challenger)
         
@@ -111,16 +111,16 @@ def main():
             # ... (rest of the player's data)
             'Points': points_me
         }, ignore_index=True)
-        
-        data = data.append({ 
+
+        data = data.append({
             'Name': name_opponent,
             # ... (rest of the opponent's data)
             'Points': points_opponent
         }, ignore_index=True)
-        
+
     if not data.empty:
         st.table(data)
-
+        
         # Option to delete a row
         selected_row = st.selectbox('Select a row to delete:', range(len(data)), format_func=lambda x: f'Row {x}')
         if st.button('Delete selected row'):
@@ -129,4 +129,16 @@ def main():
     data.to_csv('data.csv', index=False)
 
 if __name__ == "__main__":
+    try:
+        data = pd.read_csv('data.csv')
+    except (FileNotFoundError, pd.errors.EmptyDataError):
+        data = pd.DataFrame()
+
+    if not data.empty and 'Name' in data.columns:
+        total_points = data.groupby('Name')['Points'].sum().sort_values(ascending=False)
+        st.write("Total Points:")
+        st.table(total_points)
+    else:
+        st.write("No data available or 'Name' column missing.")
+
     main()

@@ -4,7 +4,7 @@ import numpy as np
 
 def calculate_points(match_type, win_loss, score, challenger=None):
     sets = score.split(',')
-    # ... (rest of the function code remains the same)
+    # ... (your calculate_points function implementation)
     return ('Invalid input', 'Invalid input')
 
 def main():
@@ -117,6 +117,8 @@ def main():
             # ... (rest of the opponent's data)
             'Points': points_opponent
         }, ignore_index=True)
+        
+        data.to_csv('data.csv', index=False)
 
     if not data.empty:
         st.table(data)
@@ -125,15 +127,9 @@ def main():
         selected_row = st.selectbox('Select a row to delete:', range(len(data)), format_func=lambda x: f'Row {x}')
         if st.button('Delete selected row'):
             data = data.drop(selected_row).reset_index(drop=True)
-        
-    data.to_csv('data.csv', index=False)
+            data.to_csv('data.csv', index=False)
 
-if __name__ == "__main__":
-    try:
-        data = pd.read_csv('data.csv')
-    except (FileNotFoundError, pd.errors.EmptyDataError):
-        data = pd.DataFrame()
-
+    # Displaying total points at the bottom
     if not data.empty and 'Name' in data.columns:
         total_points = data.groupby('Name')['Points'].sum().sort_values(ascending=False)
         st.write("Total Points:")
@@ -141,4 +137,5 @@ if __name__ == "__main__":
     else:
         st.write("No data available or 'Name' column missing.")
 
+if __name__ == "__main__":
     main()

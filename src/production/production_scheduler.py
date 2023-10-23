@@ -7,43 +7,43 @@ def calculate_points(match_type, win_loss, score, challenger=None):
     
     if match_type == 'Proposal Match':
         if win_loss == 'Win':
-            if len(sets) > 2:  # If player wins after a third set
-                return (2, 1)  # (points_for_player, points_for_opponent)
-            return (2, 0)  # (points_for_player, points_for_opponent)
+            if len(sets) > 2:
+                return (2, 1)
+            return (2, 0)
         elif win_loss == 'Loss':
-            if len(sets) > 2:  # If player loses after a third set
+            if len(sets) > 2:
                 return (1, 2)
-            else: 
+            else:
                 return (0, 2)
-        
     elif match_type == 'Challenge Match':
         if win_loss == 'Win':
             if len(sets) > 2 or '0-1' in sets or '1-0' in sets:
                 return (3, 1)
             else:
-                return (3, 0)  # The Challenged gets 0 points if they lose in straight sets
-                
+                return (3, 0)
         elif win_loss == 'Loss':
-            if len(sets) > 2 or '0-1' in sets or '1-0' in sets: 
+            if len(sets) > 2 or '0-1' in sets or '1-0' in sets:
                 return (1, 3)
             else:
-                # The Challenger gets -1 if they lose in straight sets,
-                # The Challenged gets 0
                 return (-1 if challenger == 'Challenger' else 0, 3)
-                
     return ('Invalid input', 'Invalid input')
-
-
-
 
 def main():
     st.title('Match Points Calculator')
 
-    # Load data from the previous session
+    # Load existing data
     try:
         data = pd.read_csv('data.csv')
     except (FileNotFoundError, pd.errors.EmptyDataError):
         data = pd.DataFrame()
+    
+    # Bulk Upload
+    uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+    if uploaded_file is not None:
+        bulk_data = pd.read_csv(uploaded_file)
+        data = pd.concat([data, bulk_data]).reset_index(drop=True)
+
+    
 
     names_list = [
         'Akihiro Hamada',
@@ -64,6 +64,7 @@ def main():
         'Christian Basa',
         'Craig Radley',
         'Curt Lawson',
+        "Dan Nenon",
         'Dave Belcher',
         'Ed Sch',
         'Erik Swanson',
@@ -102,6 +103,7 @@ def main():
         'Youngjun Lee'
     ]
 
+    
 
     name_me = st.selectbox('Select your name:', names_list)
     name_opponent = st.selectbox('Select your opponent:', names_list)
@@ -113,12 +115,11 @@ def main():
         challenger = st.selectbox('Are you the Challenger or the Challenged?', ['Challenger', 'Challenged'])
 
     win_loss = st.selectbox('Select Win or Loss:', ['Win', 'Loss'])
-    score = st.text_input('Enter the score (e.g., "6-2, 6-3" for straight sets or "6-2, 3-6, 1-0" for split sets):')
+    score = st.text_input('Enter the score:', '')
 
     if st.button('Calculate Points'):
         points_me, points_opponent = calculate_points(match_type, win_loss, score, challenger)
-        
-        # Player's data
+
         data = data.append({
             'Name': name_me,
             'Opponent': name_opponent,
@@ -129,34 +130,38 @@ def main():
             'Points': points_me
         }, ignore_index=True)
 
-        # Opponent's data
-        # Opponent's data
-        data = data.append({ 
+        data = data.append({
             'Name': name_opponent,
             'Opponent': name_me,
             'Match Type': match_type,
-            'Challenger/Challenged': np.nan if match_type == 'Proposal Match' else ('Challenged' if challenger == 'Challenger' else 'Challenger'),
-            'Win/Loss': 'Loss' if win_loss == 'Win' else 'Win',
+            'Challenger/Challenged': 'Challenged' if challenger == 'Challenger' else 'Challenger',
+            'Win/Loss': 'Win' if win_loss == 'Loss' else 'Loss',
             'Score': score,
             'Points': points_opponent
         }, ignore_index=True)
 
-
     if not data.empty:
-        # Display the data table
         st.table(data)
-
-        # Option to delete a row
-        selected_row = st.selectbox('Select a row to delete (refresh brower tab to see changes):', range(len(data)), format_func=lambda x: f'Row {x}')
+        
+        # Delete a row
+        selected_row = st.selectbox('Select a row to delete:', range(len(data)), format_func=lambda x: f'Row {x}')
         if st.button('Delete selected row'):
             data = data.drop(selected_row).reset_index(drop=True)
-
-    # Save data for the next session
+    
+    # Save data
     data.to_csv('data.csv', index=False)
 
-    # Calculate and display the total points for each person, ordered by highest points
-    total_points = data.groupby('Name')['Points'].sum().sort_values(ascending=False)
-    st.table(total_points)
+    # Display total points
+    data['Points'] = pd.to_numeric(data['Points'], errors='coerce')
+    data.dropna(subset=['Points'], inplace=True)
+    
+    if not data.empty and 'Name' in data.columns:
+        try:
+            total_points = data.groupby('Name')['Points'].sum().sort_values(ascending=False)
+            st.write("Total Points:")
+            st.table(total_points)
+        except Exception as e:
+            st.write(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     main()

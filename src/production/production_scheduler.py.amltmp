@@ -64,7 +64,7 @@ def main():
         'Christian Basa',
         'Craig Radley',
         'Curt Lawson',
-        "Dan Nenon",
+        "David Nenon",
         'Dave Belcher',
         'Ed Sch',
         'Erik Swanson',

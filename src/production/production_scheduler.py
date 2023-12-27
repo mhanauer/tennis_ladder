@@ -55,6 +55,7 @@ def main():
         'Beomjun Ju',
         'Billy Clark',
         'Blake Hutchinson',
+        'Blake Watkins',
         'Brady Sowers',
         'Brandon Keisner',
         'Brett Eckles',
@@ -65,6 +66,7 @@ def main():
         'Craig Radley',
         'Curt Lawson',
         "David Nenon",
+        'Daniel Gallo',
         'Dave Belcher',
         'Ed Sch',
         'Erik Swanson',
@@ -80,9 +82,11 @@ def main():
         'Jon Canon',
         'Josh Collins',
         'JP Rufilffson',
+        'Kevin Moyung',
         'Kwame Owen',
         'Louis Crow',
         'Luc Sanchez',
+        'Manuel Mariategui',
         'Matt Curry',
         'Matt Hanauer',
         'Matt James',
@@ -100,7 +104,11 @@ def main():
         'Tyler Carroll',
         'Visakan',
         'Wes Watson',
-        'Youngjun Lee'
+        'Youngjun Lee',
+        'Zach C',
+        'Mike P',
+        'Russell Li',
+        'Mo Dessouky'
     ]
 
     

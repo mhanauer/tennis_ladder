@@ -52,7 +52,7 @@ def main():
         'Aman Luther',
         'Aubry Carmody',
         'Baaqir Yusuf',
-        'Barry Gooch'
+        'Barry Gooch',
         'Beomjun Ju',
         'Billy Clark',
         'Blake Hutchinson',

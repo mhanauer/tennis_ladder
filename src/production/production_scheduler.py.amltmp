@@ -52,6 +52,7 @@ def main():
         'Aman Luther',
         'Aubry Carmody',
         'Baaqir Yusuf',
+        'Barry Gooch'
         'Beomjun Ju',
         'Billy Clark',
         'Blake Hutchinson',
@@ -107,7 +108,7 @@ def main():
         'Visakan',
         'Wes Watson',
         'Youngjun Lee',
-        'Zach C',
+        'Zack C',
         'Mike P',
         'Russell Li',
         'Mo Dessouky'
